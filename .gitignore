@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local trace data and reports (never commit real traces or secrets)
+.trace-to-eval/
+*.db
+*.db-wal
+*.db-shm
+trace-to-eval-report.json
+trace-to-eval-report.md
+trace-to-eval-report.xml
+
+# Local scratch space used by manual UI and action checks
+.tmp-*/
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trace-to-eval.dev/schema/trace-v1.schema.json",
+  "title": "Trace-to-Eval trace",
+  "description": "Provider-neutral trace schema version 1.0. One JSON object per JSONL line.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "input", "output", "model"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "description": "Free-form capture source metadata.",
+      "additionalProperties": true
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["messages"],
+      "properties": {
+        "messages": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": { "$ref": "#/$defs/message" }
+        },
+        "context": { "type": "object" }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": { "type": "string" },
+        "tool_calls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/toolCall" }
+        },
+        "structured": {},
+        "finish_reason": { "type": "string" },
+        "messages": { "type": "array" }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/tool" }
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "provider": { "type": "string" },
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string" },
+        "parameters": { "type": "object" }
+      }
+    },
+    "metrics": { "$ref": "#/$defs/metrics" },
+    "outcome": { "$ref": "#/$defs/outcome" },
+    "expectations": { "$ref": "#/$defs/expectations" },
+    "provenance": { "type": "object" },
+    "tags": {
+      "type": "array",
+      "maxItems": 50,
+      "items": { "type": "string" }
+    },
+    "metadata": { "type": "object" }
+  },
+  "$defs": {
+    "message": {
+      "type": "object",
+      "required": ["role"],
+      "properties": {
+        "role": { "enum": ["system", "user", "assistant", "tool", "developer"] },
+        "content": { "type": ["string", "null"] },
+        "tool_calls": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/toolCall" }
+        },
+        "tool_call_id": { "type": "string" }
+      }
+    },
+    "toolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "arguments"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "arguments": { "type": "object" },
+        "id": { "type": "string" }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "schema": { "type": "object" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latency_ms": { "type": "number", "minimum": 0 },
+        "input_tokens": { "type": "number", "minimum": 0 },
+        "output_tokens": { "type": "number", "minimum": 0 },
+        "cost_usd": { "type": "number", "minimum": 0 },
+        "cached": { "type": "boolean" }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["success", "failure", "unknown"] },
+        "labels": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "category": {
+          "enum": [
+            "quality",
+            "tool_call",
+            "retrieval",
+            "format",
+            "safety",
+            "latency",
+            "cost",
+            "other"
+          ]
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "expectations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text_equals": { "type": "string" },
+        "text_contains": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "text_not_contains": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "normalize": { "type": "boolean" },
+        "json_schema": { "type": "object" },
+        "json_equals": {},
+        "citations": { "$ref": "#/$defs/citations" },
+        "tool_calls": { "$ref": "#/$defs/toolExpectations" },
+        "rules": {
+          "type": "array",
+          "maxItems": 50,
+          "items": { "$ref": "#/$defs/rule" }
+        },
+        "max_cost_usd": { "type": "number", "minimum": 0 },
+        "max_latency_ms": { "type": "number", "minimum": 0 },
+        "rubric": { "$ref": "#/$defs/rubric" },
+        "human_label": { "enum": ["success", "failure", "unknown"] }
+      }
+    },
+    "citations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "sources": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "pattern": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "toolExpectations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "forbidden": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "required": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "arg_equals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "arguments"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "arguments": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "field", "pattern", "mode"],
+      "properties": {
+        "type": { "const": "regex" },
+        "field": { "type": "string", "minLength": 1 },
+        "pattern": { "type": "string", "maxLength": 500 },
+        "mode": { "enum": ["must_match", "must_not_match"] }
+      }
+    },
+    "rubric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "criteria", "min_score"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "criteria": { "type": "string", "minLength": 1 },
+        "min_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

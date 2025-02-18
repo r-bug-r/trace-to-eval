@@ -1,0 +1,14 @@
+{
+  "as_of": "2026-10-20",
+  "note": "Indicative list prices in USD per 1,000 tokens for cost *estimation* only. Provider pricing changes; re-check the official price page before enabling live calls and override these values in your local config when they differ. Nothing here is billed by this project.",
+  "default": { "input_per_1k": 0.005, "output_per_1k": 0.015 },
+  "models": {
+    "gpt-4o-mini": { "input_per_1k": 0.00015, "output_per_1k": 0.0006 },
+    "gpt-4o": { "input_per_1k": 0.0025, "output_per_1k": 0.01 },
+    "gpt-4.1-mini": { "input_per_1k": 0.0004, "output_per_1k": 0.0016 },
+    "o4-mini": { "input_per_1k": 0.0011, "output_per_1k": 0.0044 },
+    "claude-3-5-haiku-latest": { "input_per_1k": 0.0008, "output_per_1k": 0.004 },
+    "claude-sonnet-4-5": { "input_per_1k": 0.003, "output_per_1k": 0.015 },
+    "claude-opus-4-1": { "input_per_1k": 0.015, "output_per_1k": 0.075 }
+  }
+}

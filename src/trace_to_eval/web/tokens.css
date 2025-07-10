@@ -1,0 +1,116 @@
+/*
+ * Trace-to-Eval design tokens.
+ *
+ * Single source of colour, spacing, radius, motion, and type values for the UI.
+ * Components reference these names only; no component declares a raw colour or
+ * spacing value. Measured contrast ratios live in docs/design-tokens.md.
+ *
+ * Theme strategy: light is the default, dark is selected by the OS preference.
+ * Both themes expose the same names so no component branches on theme.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Canvas and surfaces */
+  --color-canvas: #f6f4ef;
+  --color-surface: #fffdf8;
+  --color-surface-sunken: #f0ece3;
+  --color-surface-raised: #ffffff;
+
+  /* Text */
+  --color-ink: #1f1d19;
+  --color-ink-muted: #6b655b;
+
+  /* Lines */
+  --color-border: #d8d2c6;
+  --color-border-strong: #b8b0a1;
+
+  /* Accent and state */
+  --color-accent: #8a4b16;
+  --color-accent-ink: #fffaf2;
+  --color-success: #1f6b43;
+  --color-success-surface: #e7f3ea;
+  --color-danger: #a32a1f;
+  --color-danger-surface: #fbe9e6;
+  --color-warning: #8a5a00;
+  --color-warning-surface: #fbf1dc;
+  --color-info: #24557d;
+  --color-info-surface: #e6f0f7;
+  --color-focus: #1e5aa8;
+
+  /* Elevation */
+  --shadow-panel: 0 1px 0 rgb(31 29 25 / 4%);
+  --shadow-dialog: 0 20px 60px rgb(0 0 0 / 25%);
+  --color-scrim: rgb(0 0 0 / 45%);
+
+  /* Spacing scale (1 step = 0.0625rem, so the scale is exact in CSS) */
+  --space-0: 0;
+  --space-px: 0.0625rem;
+  --space-05: 0.125rem;
+  --space-1: 0.25rem;
+  --space-15: 0.375rem;
+  --space-2: 0.5rem;
+  --space-25: 0.625rem;
+  --space-3: 0.75rem;
+  --space-35: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-7: 1.75rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-control: 5px;
+  --radius-panel: 8px;
+  --radius-pill: 999px;
+
+  /* Focus: two rings so the indicator survives on every surface */
+  --focus-ring: 0 0 0 3px var(--color-canvas), 0 0 0 5px var(--color-focus);
+
+  /* Motion */
+  --motion-fast: 150ms;
+  --motion-standard: 220ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* Type */
+  --font-mono: "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-canvas: #171512;
+    --color-surface: #201d19;
+    --color-surface-sunken: #2a2621;
+    --color-surface-raised: #262219;
+    --color-ink: #f0ebe2;
+    --color-ink-muted: #b0a89b;
+    --color-border: #3d3831;
+    --color-border-strong: #575047;
+    --color-accent: #e0a060;
+    --color-accent-ink: #241708;
+    --color-success: #7bc79a;
+    --color-success-surface: #1c3226;
+    --color-danger: #f09388;
+    --color-danger-surface: #3a1f1c;
+    --color-warning: #e8bd6b;
+    --color-warning-surface: #352a16;
+    --color-info: #8ec5e8;
+    --color-info-surface: #1b2b36;
+    --color-focus: #8db9f0;
+    --shadow-panel: none;
+    --shadow-dialog: 0 20px 60px rgb(0 0 0 / 60%);
+    --color-scrim: rgb(0 0 0 / 60%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-standard: 0ms;
+  }
+}

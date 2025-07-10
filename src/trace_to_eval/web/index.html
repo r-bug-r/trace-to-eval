@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="csrf-token" content="{{CSRF_TOKEN}}">
+    <title>Trace-to-Eval</title>
+    <link rel="stylesheet" href="/assets/tokens.css">
+    <link rel="stylesheet" href="/assets/app.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="app-header">
+      <div class="header-inner">
+        <a class="brand" href="#/">
+          <span class="brand-mark" aria-hidden="true">T→E</span>
+          <span class="brand-text">Trace-to-Eval</span>
+        </a>
+        <nav class="main-nav" aria-label="Primary">
+          <a href="#/" data-nav="/">Overview</a>
+          <a href="#/cases" data-nav="/cases">Cases</a>
+          <a href="#/runs" data-nav="/runs">Runs</a>
+          <a href="#/ci" data-nav="/ci">CI</a>
+          <a href="#/settings" data-nav="/settings">Settings</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <p class="loading">Loading…</p>
+    </main>
+
+    <footer class="app-footer">
+      <p>Local-only SQLite store. No accounts, telemetry, or uploads.</p>
+      <p>Replays use the deterministic fake provider; live calls stay in the CLI.</p>
+    </footer>
+
+    <dialog id="delete-dialog" aria-labelledby="delete-title">
+      <h2 id="delete-title">Delete this case?</h2>
+      <p>
+        This permanently removes <code id="delete-case-id"></code>, its labels, and its stored
+        run results from the local database. Runs themselves remain.
+      </p>
+      <div class="dialog-actions">
+        <button type="button" id="cancel-delete" class="button">Cancel</button>
+        <button type="button" id="confirm-delete" class="button danger">Delete case</button>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/assets/app.js"></script>
+  </body>
+</html>

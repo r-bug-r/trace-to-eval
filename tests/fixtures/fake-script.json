@@ -1,0 +1,37 @@
+{
+  "models": {
+    "fake-baseline-v1": {
+      "mode": "echo"
+    },
+    "fake-regressed-v2": {
+      "mode": "mutate",
+      "text_suffix": "",
+      "cost_multiplier": 3.0,
+      "latency_multiplier": 2.0,
+      "tool_argument_overrides": {
+        "get_order_status": {
+          "order_id": "A-9999"
+        }
+      }
+    },
+    "fake-broken-v1": {
+      "mode": "echo",
+      "error": "timeout"
+    }
+  },
+  "cases": {
+    "tr_fail_005": {
+      "mode": "mutate",
+      "text": "Order A-2087 shipped on 2026-10-17 and is in transit. [order#A-2087]",
+      "tool_calls": [
+        {
+          "name": "get_order_status",
+          "arguments": {
+            "order_id": "A-2087"
+          },
+          "id": "call_fixed"
+        }
+      ]
+    }
+  }
+}

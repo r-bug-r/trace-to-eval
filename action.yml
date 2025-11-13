@@ -1,0 +1,130 @@
+name: Trace-to-Eval
+description: Replay AI traces against deterministic assertions and fail on quality, cost, or latency regressions.
+author: Trace-to-Eval maintainers
+branding:
+  icon: activity
+  color: purple
+inputs:
+  traces:
+    description: Space- or comma-separated trace file globs.
+    required: false
+    default: traces/*.jsonl
+  db:
+    description: SQLite case store path.
+    required: false
+    default: .trace-to-eval/cases.db
+  tag:
+    description: Tag applied to imported cases.
+    required: false
+    default: ""
+  provider:
+    description: fake, openai-compatible, or anthropic.
+    required: false
+    default: fake
+  model:
+    description: Model identifier for replay.
+    required: false
+    default: ""
+  fake-script:
+    description: JSON script controlling fake provider behavior.
+    required: false
+    default: ""
+  baseline:
+    description: Baseline name used for relative gates.
+    required: false
+    default: ""
+  min-pass-rate:
+    description: Minimum pass rate, 0.0-1.0.
+    required: false
+    default: ""
+  max-pass-rate-drop:
+    description: Maximum allowed pass-rate drop versus baseline.
+    required: false
+    default: ""
+  max-cost-increase-pct:
+    description: Maximum allowed average-cost increase versus baseline.
+    required: false
+    default: ""
+  max-latency-increase-pct:
+    description: Maximum allowed p95-latency increase versus baseline.
+    required: false
+    default: ""
+  max-infrastructure-errors:
+    description: Maximum infrastructure errors.
+    required: false
+    default: ""
+  max-signal-failures:
+    description: Maximum rubric signal failures.
+    required: false
+    default: ""
+  max-run-cost-usd:
+    description: Hard live-run cost cap.
+    required: false
+    default: ""
+  max-requests:
+    description: Hard live-run request cap.
+    required: false
+    default: ""
+  max-tokens:
+    description: Hard live-run token cap.
+    required: false
+    default: ""
+  timeout:
+    description: Per-request timeout in seconds.
+    required: false
+    default: ""
+  allow-live:
+    description: Explicitly allow live provider calls. Requires cost and request caps.
+    required: false
+    default: "false"
+  format:
+    description: terminal, json, markdown, or junit.
+    required: false
+    default: markdown
+  out:
+    description: Report output path. Defaults to trace-to-eval-report.md or .xml for junit.
+    required: false
+    default: ""
+  python-version:
+    description: Python version used to run the action.
+    required: false
+    default: "3.12"
+outputs:
+  report:
+    description: Path to the generated report.
+    value: ${{ steps.replay.outputs.report }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    - name: Install Trace-to-Eval
+      shell: bash
+      run: python -m pip install "$GITHUB_ACTION_PATH"
+    - name: Replay traces
+      id: replay
+      shell: bash
+      env:
+        INPUT_TRACES: ${{ inputs.traces }}
+        INPUT_DB: ${{ inputs.db }}
+        INPUT_TAG: ${{ inputs.tag }}
+        INPUT_PROVIDER: ${{ inputs.provider }}
+        INPUT_MODEL: ${{ inputs.model }}
+        INPUT_FAKE_SCRIPT: ${{ inputs.fake-script }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_MIN_PASS_RATE: ${{ inputs.min-pass-rate }}
+        INPUT_MAX_PASS_RATE_DROP: ${{ inputs.max-pass-rate-drop }}
+        INPUT_MAX_COST_INCREASE_PCT: ${{ inputs.max-cost-increase-pct }}
+        INPUT_MAX_LATENCY_INCREASE_PCT: ${{ inputs.max-latency-increase-pct }}
+        INPUT_MAX_INFRASTRUCTURE_ERRORS: ${{ inputs.max-infrastructure-errors }}
+        INPUT_MAX_SIGNAL_FAILURES: ${{ inputs.max-signal-failures }}
+        INPUT_MAX_RUN_COST_USD: ${{ inputs.max-run-cost-usd }}
+        INPUT_MAX_REQUESTS: ${{ inputs.max-requests }}
+        INPUT_MAX_TOKENS: ${{ inputs.max-tokens }}
+        INPUT_TIMEOUT: ${{ inputs.timeout }}
+        INPUT_ALLOW_LIVE: ${{ inputs.allow-live }}
+        INPUT_FORMAT: ${{ inputs.format }}
+        INPUT_OUT: ${{ inputs.out }}
+      run: |
+        python "$GITHUB_ACTION_PATH/scripts/action_entry.py"

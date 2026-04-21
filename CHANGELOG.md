@@ -21,6 +21,12 @@ and the project uses semantic versioning.
 
 - The case-delete confirmation no longer survives client-side navigation: any open modal is
   closed when a route renders, so it cannot cover an unrelated view.
+- Control borders met neither theme's non-text contrast requirement (2.1:1). Both
+  `--color-border-strong` values are darkened to at least 3.7:1 against every surface.
+- Navigation links are now 44 px tall and no longer wrap mid-word at 320 px; the mobile
+  header wraps between links instead of clipping "Settings".
+- The case search reports its result count through a polite live region and shows an
+  explicit "No cases match this search." row instead of an empty table.
 
 ## 0.1.0 - 2026-10-20
 

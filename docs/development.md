@@ -49,6 +49,31 @@ dependency is ever added at runtime, add a lockfile at the same time.
 - Tests run with the fake provider. Live calls are never part of CI.
 - New assertion types need a fixture that demonstrates both pass and fail.
 
+## Web UI verification
+
+The browser gates are manual because the UI has no JavaScript build step or test runner.
+Run them before any UI release and paste the observed results into the pull request.
+
+```bash
+PYTHONPATH=src python -m trace_to_eval --db "$TEMP/t2e-gate/ui.db" import examples/traces/*.jsonl
+PYTHONPATH=src python -m trace_to_eval --db "$TEMP/t2e-gate/ui.db" serve --port 8765
+```
+
+| Gate | Method | Pass condition |
+| --- | --- | --- |
+| Route rendering | Open every route below at 320, 390, 768, 1024, and 1440 px. | No route shows an error view; `document.documentElement.scrollWidth` equals `clientWidth`. |
+| Automated a11y | Inject `axe-core` and run `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa` on every route, in light and dark. | Zero violations. |
+| Keyboard | `Tab` from a fresh load through every control on every route. | Order matches visual order, every stop draws a focus ring, no control is skipped, no focus lands behind a modal. |
+| Modal | Open the case-delete dialog with `Enter`, tab past its last control, press `Escape`. | Focus stays on dialog controls, `Escape` closes, focus returns to the trigger. |
+| Contrast | Recompute `docs/design-tokens.md` against `tokens.css`. | Every listed pair meets its required ratio. |
+| Touch targets | Measure `button`, `a`, `select`, `input`, `textarea` boxes. | No visible control is under 44 px tall. |
+| Reduced motion | Emulate `prefers-reduced-motion: reduce`. | Motion tokens resolve to `0ms`; no transition or animation runs. |
+
+Routes: `#/`, `#/cases`, `#/cases/<case_id>`, `#/runs`, `#/runs/<run_id>`, `#/ci`, `#/settings`.
+
+At 200% zoom a 1440 px window lays out at 720 CSS px, which the width sweep above already
+covers; check text-only reflow by emulating 320 px with a 200% browser font size.
+
 ## Test ladder
 
 | Layer | Location | Proves |

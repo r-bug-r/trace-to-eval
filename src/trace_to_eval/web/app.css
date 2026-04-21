@@ -133,6 +133,7 @@ pre {
 .brand {
   display: inline-flex;
   align-items: center;
+  min-height: 2.75rem;
   gap: var(--space-25);
   color: var(--color-ink);
   text-decoration: none;
@@ -164,13 +165,16 @@ pre {
 }
 
 .main-nav a {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: var(--space-2) var(--space-25);
   border-radius: var(--radius-control);
   color: var(--color-ink-muted);
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .main-nav a:hover {
@@ -1217,8 +1221,7 @@ dialog::backdrop {
 
   .main-nav {
     width: 100%;
-    overflow-x: auto;
-    flex-wrap: nowrap;
+    row-gap: var(--space-1);
   }
 
   main {

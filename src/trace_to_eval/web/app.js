@@ -712,7 +712,12 @@ async function casesView() {
   const data = await api("/api/cases?limit=500");
   const cases = data.cases || [];
   const total = data.total || cases.length;
-  const countLabel = h("span", { class: "muted small", text: `Showing ${cases.length} of ${total} cases` });
+  const countLabel = h("span", {
+    class: "muted small",
+    role: "status",
+    "aria-live": "polite",
+    text: `Showing ${cases.length} of ${total} cases`,
+  });
 
   if (cases.length === 0) {
     return h(
@@ -734,6 +739,13 @@ async function casesView() {
     autocomplete: "off",
   });
   const table = caseTable(cases);
+  const noMatch = h(
+    "tr",
+    {},
+    h("td", { colspan: "6", class: "table-empty", text: "No cases match this search." }),
+  );
+  noMatch.hidden = true;
+  table.querySelector("tbody").append(noMatch);
   const toolbar = h(
     "div",
     { class: "toolbar" },
@@ -748,6 +760,7 @@ async function casesView() {
       row.hidden = !match;
       if (match) visible += 1;
     }
+    noMatch.hidden = visible !== 0;
     countLabel.textContent = query
       ? `${visible} matching case${visible === 1 ? "" : "s"} of ${total}`
       : `Showing ${cases.length} of ${total} cases`;

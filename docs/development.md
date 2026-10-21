@@ -55,9 +55,11 @@ The browser gates are manual because the UI has no JavaScript build step or test
 Run them before any UI release and paste the observed results into the pull request.
 
 ```bash
-PYTHONPATH=src python -m trace_to_eval --db "$TEMP/t2e-gate/ui.db" import examples/traces/*.jsonl
-PYTHONPATH=src python -m trace_to_eval --db "$TEMP/t2e-gate/ui.db" serve --port 8765
+PYTHONPATH=src python -m trace_to_eval --db .tmp-ui/ui.db import examples/traces/*.jsonl
+PYTHONPATH=src python -m trace_to_eval --db .tmp-ui/ui.db serve --port 8765
 ```
+
+`.tmp-*` is gitignored, so these commands never touch committed data.
 
 | Gate | Method | Pass condition |
 | --- | --- | --- |
